@@ -30,7 +30,11 @@ var app = new Vue({
   	  	tcyDigit:   2,
   	  	kepub:      false,
   	  	autoSentenceWrap: false
-  	  }
+  	  },
+      ibooks: {
+        version: "",
+        specifiedFonts: true
+      }
   	}
   },
   computed: {
@@ -60,6 +64,15 @@ var app = new Vue({
   	  if ( metadata.publisher == "" ) {
   	  	delete metadata.publisher;
   	  }
+      if ( metadata.ibooks.version == "" ) {
+        delete metadata.ibooks.version;
+      }
+      if ( metadata.ibooks.specifiedFonts == true ) {
+        delete metadata.ibooks.specifiedFonts;
+      }
+      if ( Object.keys(metadata.ibooks).length === 0 ) {
+        delete metadata.ibooks;
+      }
       var str = `# ddconv.yml
 # でんでんコンバーター設定ファイル
 # 

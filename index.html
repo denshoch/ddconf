@@ -87,10 +87,12 @@
         			</label>
         		</div>
         		<div class="form-check">
-        			<label class="form-check-label">
+        			<div class="form-group">
+        			  <label class="form-check-label">
         				<input class="form-check-input" type="checkbox" v-model="metadata.options.tocInSpine"/>
         				目次ページを自動生成する
-        			</label>
+        			  </label>
+        			</div>
         			<div class="form-group">
         			  <select class="form-control form-control-sm" v-model.number="metadata.options.tocDisplayDepth">
         			  	<optgroup label="目次の階層の深さ">
@@ -123,10 +125,12 @@
         			</label>
         		</div>
         		<div class="form-check">
-        			<label class="form-check-label">
-        				<input class="form-check-input" type="checkbox" v-model="metadata.options.autoTcy"/>
+        			<div class="form-group">
+        			  <label class="form-check-label">
+        				  <input class="form-check-input" type="checkbox" v-model="metadata.options.autoTcy"/>
         				自動縦中横を有効にする
-        			</label>
+        			  </label>
+        		  </div>
         			<div class="form-group">
         			  <select class="form-control form-control-sm" v-model.number="metadata.options.tcyDigit">
         			  	<optgroup label="縦中横にする数字の上限桁数">
@@ -149,6 +153,17 @@
         				文を句点ごとに<code>span</code>で囲む
         			</label>
         		</div>
+        		<hr>
+        		<div class="form-group">
+        			<label>本のバージョン（iBooks用）</label>
+        			<input class="form-control form-control-sm" type="text" v-model="metadata.ibooks.version" placeholder="バージョン番号" />
+        		</div>
+        		<div class="form-check">
+        			<label class="form-check-label">
+        				<input class="form-check-input" type="checkbox" v-model="metadata.ibooks.specifiedFonts"/>
+        				埋め込みフォントが使われていれば有効にする（iBooks用）
+        			</label>
+        		</div>
         		<hr class="hidden-sm-up">
         	</div>
         	<div class="col-sm-6">
@@ -164,7 +179,7 @@
         		  </a>
         		</div>
         		<div class="form-group">
-        	    <textarea id="textarea" class="form-control form-control-sm" readonly style="height:500px">{{ yaml }}</textarea>
+        	    <textarea id="textarea" class="form-control form-control-sm" readonly style="height:580px">{{ yaml }}</textarea>
         	  </div>
         	</div>
         </div>
