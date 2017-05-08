@@ -44,14 +44,15 @@ var app = new Vue({
   	  if ( metadata.titles.length == 0 ) {
   	  	return "タイトルを入力してください";
   	  }
-  	  metadata.creators.forEach(function( creator, index ){
-  	  	if ( creator.content == "" ) {
-  	  		metadata.creators.splice( index, 1 );
-  	  	} else {
-  	  	    if ( creator.role == "" ) {
-  	  	    	delete creator.role;
-  	  	    }
-  	  	}
+      creators = metadata.creators;
+      metadata.creators = [];
+  	  creators.forEach(function( creator, index ){
+        if ( creator.role == "" ) {
+          delete creator.role;
+        }
+        if ( creator.content !== "" ) {
+          metadata.creators.push(creator);
+        }
   	  });
   	  if ( metadata.creators.length == 0 ) {
   	  	delete metadata.creators;
@@ -59,8 +60,20 @@ var app = new Vue({
   	  if ( metadata.publisher == "" ) {
   	  	delete metadata.publisher;
   	  }
-  	  var date = new Date();
-  	  return yaml.safeDump(metadata) + `\n# ${date.toLocaleString()}`;
+      var str = `# ddconv.yml
+# でんでんコンバーター設定ファイル
+# 
+# 使い方==
+# このファイルを「ddconv.yml」というファイル名で保存して、他の素材とともに「でんでんコンバーター」にアップロードしてください。
+# 入力フォームに情報を打ち込む手間を減らし、より詳細な情報を設定できます。
+#
+# タイムスタンプ==
+# ${new Date().toLocaleString()}
+
+
+${yaml.safeDump(metadata)}
+`;
+  	  return str;
   	},
     url: function(){
       var blob = new Blob([ this.yaml ], { "type" : "text/plain" });
