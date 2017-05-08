@@ -64,6 +64,21 @@ var app = new Vue({
   	  if ( metadata.publisher == "" ) {
   	  	delete metadata.publisher;
   	  }
+      if ( metadata.options.tocDisplayDepth === 6 ) {
+        delete metadata.options.tocDisplayDepth;
+      }
+      if ( metadata.options.displayLandmarksNav === false ) {
+        delete metadata.options.displayLandmarksNav;
+      }
+      if ( metadata.options.displayLoiNav === false ) {
+        delete metadata.options.displayLoiNav;
+      }
+      if ( metadata.options.displayLotNav === false ) {
+        delete metadata.options.displayLotNav;
+      }
+      if ( metadata.options.kepub === false ) {
+        delete metadata.options.kepub;
+      }
       if ( metadata.ibooks.version == "" ) {
         delete metadata.ibooks.version;
       }
