@@ -121,13 +121,23 @@ ${yaml.safeDump(metadata)}
       }
     }
   },
-   methods: {
+  methods: {
     addNewCreator: function(event){
       var newCreator = {
         content: "",
         role:    ""
       }
       this.metadata.creators.push(newCreator);
+    },
+    copyTextarea: function(event){
+      var textarea = document.getElementById('textarea');
+      textarea.select();
+      if ( document.execCommand('copy') ) {
+        alert('正常にクリップボードにコピーされました');
+      } else {
+        alert('クリップボードにコピーできませんでした');
+      }
+      textarea.blur();
     }
-   }
+  }
 })

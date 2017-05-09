@@ -1,220 +1,233 @@
 <!doctype html>
 <html lang="ja">
-    <head>
-        <meta charset="utf-8">
-        <title>でんでんコンフィギュレーター</title>
-        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.0/vue.min.js"></script>
-    </head>
-    <body>
-    	<nav class="navbar navbar-toggleable-md navbar-light bg-faded">
-    		<div class="container">
-    			<h1 class="navbar-brand mb-0">でんでんコンフィギュレーター</h1>
-    			<span class="navbar-text">
-    				設定ファルでもっと便利に
-    			</span>
-    		</div>
-    	</nav>
-      <div id="form" class="container mt-4">
-      	<p><a href="http://conv.denshochan.com/">でんでんコンバーター</a>の<a href="http://conv.denshochan.com/config">設定ファイル</a> <code>ddconv.yml</code> を手軽に作成できます</p>
-        <div class="row">
-        	<div class="col-sm-6">
-        		<div class="card mb-2">
-        			<div class="card-block">
-        		    <div class="form-group" v-for="(title, index) in metadata.titles">
-        			    <label>タイトル</label>
-        			    <input class="form-control form-control-sm" type="text" v-model="title.content" placeholder="タイトルを入れてね" required/>
-        		    </div>
-        			</div>
-        		</div>
-        		<div class="card mb-2">
-        			<div class="card-block">
-        		    <div class="form-group" v-for="(creator, index) in metadata.creators">
-        			    <label>作成者{{index + 1}}</label>
-        			    <button 
-        			      v-if="index > 0"
-        			      v-on:click="metadata.creators.splice(index, 1)"
-        			      class="btn btn-sm btn-outline-danger">
-        			        <i class="fa fa-times" aria-hidden="true"></i> 削除
-        			    </button>
-        			    <div class="form-group">
-        				    <input class="form-control form-control-sm" type="text" v-model="creator.content" placeholder="名前" />
-          			  </div>
-          			  <div class="form-group">
-          				  <select class="form-control form-control-sm" v-model="creator.role">
-          		  		  <option value="">役割指定なし</option>
-          		  	    <option value="aut">著者</option>
-        	  	  	    <option value="edt">編集</option>
-        		    	    <option value="edt">監修</option>
-        		    	    <option value="trl">翻訳</option>
-        		  	      <option value="ill">イラスト</option>
-        		  	      <option value="aut">原著</option>
-        		  	      <option value="cre">企画・原案</option>
-        		  	      <option value="pht">写真</option>
-        		  	      <option value="cwt">解説</option>
-        		  	      <option value="nrt">朗読</option>
-        				    </select>
-        		      </div>
-        		    </div>
-        		    <div class="form-group">
-        		      <button
-        		        class="btn btn-sm btn-outline-success"
-        		        v-on:click="addNewCreator"
-        		        >
-        		        <i class="fa fa-plus" aria-hidden="true"></i> 作成者を追加する
-        		      </button>
-        		    </div>
-        			</div>
-        		</div>
-        		<div class="card mb-2">
-        		  <div class="card-block">
-        		    <div class="form-group">
-        		    	<label>出版者</label>
-        		    	<input class="form-control form-control-sm" type="text" v-model="metadata.publisher" placeholder="出版者名" />
-        		    </div>
-        		  </div>
-        		</div>
-        		<div class="card mb-2">
-        		  <div class="card-block">
-        		    <div class="form-group">
-        			    <label>言語</label>
-        			    <select class="form-control form-control-sm" v-model="metadata.language">
-        			      <option value="ja">日本語</option>
-        			      <option value="en">英語</option>
-        			    </select>
-        		    </div>
-        		  </div>
-        		</div>
-        		<div class="card mb-2">
-        		  <div class="card-block">
-        		    <div class="form-group">
-        			    <label>ページ送り方向</label>
-        			    <select class="form-control form-control-sm" v-model="metadata.pageDirection">
-        			      <option value="ltr">左から右(横書き)</option>
-        			      <option value="rtl">右から左(縦書き)</option>
-        			    </select>
-        		    </div>
-        		  </div>
-        		</div>
-        		<div class="card mb-2">
-        		  <div class="card-block">
-        		    <div class="form-check">
-        		    	<label class="form-check-label">
-        		    		<input class="form-check-input" type="checkbox" v-model="metadata.options.titlepage"/>
-        		    		扉ページを自動生成する
-        		    	</label>
-        		    </div>
-        		    <div class="form-check">
-        		    	<div class="form-group">
-        		    	  <label class="form-check-label">
-        		    		<input class="form-check-input" type="checkbox" v-model="metadata.options.tocInSpine"/>
-        		    		目次ページを自動生成する
-        		    	  </label>
-        		    	</div>
-        		    	<div class="form-group">
-        		    	  <select class="form-control form-control-sm" v-model.number="metadata.options.tocDisplayDepth">
-        		    	  	<optgroup label="目次の階層の深さ">
-        		    		    <option value="1">1</option>
-        		    		    <option value="2">2</option>
-        		    		    <option value="3">3</option>
-        		    		    <option value="4">4</option>
-        		    		    <option value="5">5</option>
-        		    		    <option value="6">6（推奨）</option>
-        		    		  </<optgroup>
-        		    	  </select>
-        		    	</div>
-        		    </div>
-        		    <div class="form-check">
-        		    	<label class="form-check-label">
-        		    		<input class="form-check-input" type="checkbox" v-model="metadata.options.displayLandmarksNav"/>
-        		    		目次ページにランドマークナビゲーションを表示する
-        		    	</label>
-        		    </div>
-        		    <div class="form-check">
-        		    	<label class="form-check-label">
-        		    		<input class="form-check-input" type="checkbox" v-model="metadata.options.displayLoiNav"/>
-        		    		目次ページに図版一覧を表示する
-        		    	</label>
-        		    </div>
-        		    <div class="form-check">
-        		    	<label class="form-check-label">
-        		    		<input class="form-check-input" type="checkbox" v-model="metadata.options.displayLotNav"/>
-        		    		目次ページに表一覧を表示する
-        		    	</label>
-        		    </div>
-        		    <div class="form-check">
-        		    	<div class="form-group">
-        		    	  <label class="form-check-label">
-        		    		  <input class="form-check-input" type="checkbox" v-model="metadata.options.autoTcy"/>
-        		    		自動縦中横を有効にする
-        		    	  </label>
-        		      </div>
-        		    	<div class="form-group">
-        		    	  <select class="form-control form-control-sm" v-model.number="metadata.options.tcyDigit">
-        		    	  	<optgroup label="縦中横にする数字の上限桁数">
-        		    		    <option value="2">2桁</option>
-        		    		    <option value="3">3桁</option>
-        		    		    <option value="4">4桁</option>
-        		    		  </optgroup>
-        		    	  </select>
-        		    	</div>
-        		    </div>
-        		    <div class="form-check">
-        		    	<label class="form-check-label">
-        		    		<input class="form-check-input" type="checkbox" v-model="metadata.options.kepub"/>
-        		    		拡張子を<code>.kepub.epub</code>にする
-        		    	</label>
-        		    </div>
-        		    <div class="form-check">
-        		    	<label class="form-check-label">
-        		    		<input class="form-check-input" type="checkbox" v-model="metadata.options.autoSentenceWrap"/>
-        		    		文を句点ごとに<code>span</code>で囲む
-        		    	</label>
-        		    </div>
-        		  </div>
-        		</div>
-        		<div class="card mb-2">
-        		  <div class="card-block">
-        		    <div class="form-group">
-        		    	<label>本のバージョン（iBooks用）</label>
-        		    	<input class="form-control form-control-sm" type="text" v-model="metadata.ibooks.version" placeholder="バージョン番号" />
-        		    </div>
-        		    <div class="form-check">
-        		    	<label class="form-check-label">
-        		    		<input class="form-check-input" type="checkbox" v-model="metadata.ibooks.specifiedFonts"/>
-        		    		埋め込みフォントが使われていれば有効にする（iBooks用）
-        		    	</label>
-        		    </div>
-        		  </div>
-        		</div>
-        	</div>
-        	<div class="col-sm-6">
-        		<div class="form-group">
-        		  <a
-        		    role="button"
-        		    class="btn btn-sm" 
-        		    v-bind:class="{ 'btn-primary': btnStatus.downloadable, 'btn-secondary':  btnStatus.disabled, disabled: btnStatus.disabled }" 
-        		    v-bind:href="url"
-        		    download="ddconv.yml"
-        		  >
-        		  	<i class="fa fa-download" aria-hidden="true"></i> ダウンロード
-        		  </a>
-        		</div>
-        		<div class="form-group">
-        	    <textarea id="textarea" class="form-control form-control-sm" readonly style="height:580px">{{ yaml }}</textarea>
-        	  </div>
-        	</div>
+  <head>
+    <meta charset="utf-8">
+    <title>でんでんコンフィギュレーター</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.0/vue.min.js"></script>
+    <style>
+          .btn:hover {
+            cursor: pointer;
+          }
+          .btn:disabled {
+            cursor: auto;
+          }
+          .card-block .form-group:last-child {
+            margin-bottom: 0;
+          }
+        </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+      <div class="container">
+        <h1 class="navbar-brand mb-0">でんでんコンフィギュレーター</h1>
+        <span class="navbar-text">設定ファルでもっと便利に </span>
+      </div>
+    </nav>
+    <div id="form" class="container mt-4">
+      <p>
+        <a href="http://conv.denshochan.com/">でんでんコンバーター</a>の
+        <a href="http://conv.denshochan.com/config">設定ファイル</a>
+        <code>ddconv.yml</code>を手軽に作成できます
+      </p>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card mb-2">
+            <div class="card-block">
+              <div class="form-group row" v-for="(title, index) in metadata.titles">
+                <label class="col-sm-4 col-form-label">タイトル</label>
+                <div class="col-sm-8">
+                  <input class="form-control form-control-sm" type="text" v-model="title.content" placeholder="タイトルを入れてね" required/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-2">
+            <div class="card-block">
+              <div class="form-group row" v-for="(creator, index) in metadata.creators">
+                <div class="col-sm-4">
+                  <label class="col-form-label">作成者{{index + 1}}</label>&nbsp;
+                  <button v-if="index > 0" v-on:click="metadata.creators.splice(index, 1)" class="btn btn-sm btn-outline-danger">
+                    <i class="fa fa-times" aria-hidden="true"></i>&nbsp;削除
+                  </button>
+                </div>
+                <div class="col-sm-8">
+                  <div class="form-group">
+                    <input class="form-control form-control-sm" type="text" v-model="creator.content" placeholder="名前" />
+                  </div>
+                  <div class="form-group">
+                    <select class="form-control form-control-sm" v-model="creator.role">
+                      <option value="">役割指定なし</option>
+                      <option value="aut">著者</option>
+                      <option value="edt">編集</option>
+                      <option value="edt">監修</option>
+                      <option value="trl">翻訳</option>
+                      <option value="ill">イラスト</option>
+                      <option value="aut">原著</option>
+                      <option value="cre">企画・原案</option>
+                      <option value="pht">写真</option>
+                      <option value="cwt">解説</option>
+                      <option value="nrt">朗読</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <button class="btn btn-sm btn-outline-success" v-on:click="addNewCreator" >
+                  <i class="fa fa-plus" aria-hidden="true"></i>&nbsp;作成者を追加する
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-2">
+            <div class="card-block">
+              <div class="form-group row">
+                <label class="col-sm-4 col-form-label">出版者</label>
+                <div class="col-sm-8">
+                  <input class="form-control form-control-sm" type="text" v-model="metadata.publisher" placeholder="出版者名" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-2">
+            <div class="card-block">
+              <div class="form-group row">
+                <label class="col-sm-4 col-form-label">言語</label>
+                <div class="col-sm-8">
+                  <select class="form-control form-control-sm" v-model="metadata.language">
+                    <option value="ja">日本語</option>
+                    <option value="en">英語</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-2">
+            <div class="card-block">
+              <div class="form-group row">
+                <label class="col-sm-4 col-form-label">ページ送り方向</label>
+                <div class="col-sm-8">
+                  <select class="form-control form-control-sm" v-model="metadata.pageDirection">
+                    <option value="ltr">左から右(横書き)</option>
+                    <option value="rtl">右から左(縦書き)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-2">
+            <div class="card-block">
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox" v-model="metadata.options.titlepage"/>&nbsp;扉ページを自動生成する 
+                </label>
+              </div>
+              <div class="row">
+                <div class="col-sm-6 form-check">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" v-model="metadata.options.tocInSpine"/>&nbsp;目次ページを自動生成する 
+                  </label>
+                </div>
+                <div class="col-sm-6 form-group">
+                  <select class="form-control form-control-sm" v-model.number="metadata.options.tocDisplayDepth">
+                    <optgroup label="目次の階層の深さ">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6（推奨）</option>
+                    </
+                    <optgroup>
+                  </select>
+                </div> 
+              </div>
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox" v-model="metadata.options.displayLandmarksNav"/>&nbsp;目次ページにランドマークナビゲーションを表示する 
+                </label>
+              </div>
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox" v-model="metadata.options.displayLoiNav"/>&nbsp;目次ページに図版一覧を表示する 
+                </label>
+              </div>
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox" v-model="metadata.options.displayLotNav"/>&nbsp;目次ページに表一覧を表示する 
+                </label>
+              </div>
+              <div class="row">
+                <div class="col-sm-6 form-check">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" v-model="metadata.options.autoTcy"/>&nbsp;自動縦中横を有効にする 
+                  </label>
+                </div>
+                <div class="col-sm-6 form-group">
+                  <select class="form-control form-control-sm" v-model.number="metadata.options.tcyDigit">
+                    <optgroup label="縦中横にする数字の上限桁数">
+                    <option value="2">2桁</option>
+                    <option value="3">3桁</option>
+                    <option value="4">4桁</option>
+                    </optgroup>
+                  </select>
+                </div>
+              </div>
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox" v-model="metadata.options.kepub"/>&nbsp;拡張子を
+                  <code>.kepub.epub</code>にする
+                </label>
+              </div>
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox" v-model="metadata.options.autoSentenceWrap"/>&nbsp;文を句点ごとに
+                  <code>span</code>で囲む
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-2">
+            <div class="card-block">
+              <div class="card-text">iBooks独自オプション</div>
+              <div class="form-group row">
+                <label class="col-sm-4 col-form-label">本のバージョン</label>
+                <div class="col-sm-8">
+                  <input class="form-control form-control-sm" type="text" v-model="metadata.ibooks.version" placeholder="バージョン番号" />
+                </div>
+              </div>
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox" v-model="metadata.ibooks.specifiedFonts"/>&nbsp;埋め込みフォントが使われていれば有効にする
+                </label>
+              </div>
+            </div>
+          </div>
+          <hr class="my-4 hidden-md-up">
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <a role="button" class="btn btn-sm" v-bind:class="{ 'btn-primary': btnStatus.downloadable, 'btn-secondary':  btnStatus.disabled, disabled: btnStatus.disabled }" v-bind:href="url" download="ddconv.yml" >
+              <i class="fa fa-download" aria-hidden="true"></i>&nbsp;ダウンロード
+            </a>
+            <button class="btn btn-sm" v-bind:class="{ 'btn-info': btnStatus.downloadable, 'btn-secondary':  btnStatus.disabled}" v-on:click="copyTextarea" v-bind:disabled="btnStatus.disabled" >
+              <i class="fa fa-copy" aria-hidden="true"></i>&nbsp;クリップボードにコピー
+            </button>
+          </div>
+          <div class="form-group">
+            <textarea id="textarea" class="form-control form-control-sm" readonly style="height:580px">{{ yaml }}</textarea>
+          </div>
         </div>
       </div>
-      <footer class="footer mt-4 bg-faded">
-      	<div class="container py-3">
-      		<div class="text-center">
-      			Copyright © 2017
-      			<a class="nav-link" href="http://denshochan.com">電書ちゃんねる</a>
-      		</div>
-      	</div>
-      </footer>
-      <script src="bundle.js"></script>
-    </body>
+    </div>
+    <footer class="footer mt-4 bg-faded">
+      <div class="container py-3">
+        <div class="text-center">Copyright &#169; 2017 
+          <a class="nav-link" href="http://denshochan.com">電書ちゃんねる</a>
+        </div>
+      </div>
+    </footer>
+    <script src="bundle.js"></script>
+  </body>
 </html>
