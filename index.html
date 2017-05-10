@@ -5,8 +5,15 @@
     <title>でんでんコンフィギュレーター</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.0/vue.min.js"></script>
     <style>
+      body {
+        font-size: 14px;
+      }
           .btn:hover {
             cursor: pointer;
           }
@@ -19,10 +26,10 @@
         </style>
   </head>
   <body>
-    <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+    <nav class="navbar navbar-toggleable-md inverse bg-inverse">
       <div class="container">
-        <h1 class="navbar-brand mb-0">でんでんコンフィギュレーター</h1>
-        <span class="navbar-text">設定ファルでもっと便利に </span>
+        <h1 class="navbar-brand mb-0" style="color:white">でんでんコンフィギュレーター</h1>
+        <span class="navbar-text" style="color:gray">設定ファルでもっと便利に </span>
       </div>
     </nav>
     <div id="form" class="container mt-4">
@@ -33,7 +40,7 @@
       </p>
       <div class="row">
         <div class="col-md-6">
-          <div class="card mb-2">
+          <div class="card mb-3">
             <div class="card-block">
               <div class="form-group row" v-for="(title, index) in metadata.titles">
                 <label class="col-sm-4 col-form-label">タイトル</label>
@@ -43,7 +50,7 @@
               </div>
             </div>
           </div>
-          <div class="card mb-2">
+          <div class="card mb-3">
             <div class="card-block">
               <div class="form-group row" v-for="(creator, index) in metadata.creators">
                 <div class="col-sm-4">
@@ -75,145 +82,306 @@
               </div>
               <div class="form-group">
                 <button class="btn btn-sm btn-outline-success" v-on:click="addNewCreator" >
-                  <i class="fa fa-plus" aria-hidden="true"></i>&nbsp;作成者を追加する
+                  <i class="fa fa-plus" aria-hidden="true"></i>&nbsp;追加する
                 </button>
               </div>
             </div>
           </div>
-          <div class="card mb-2">
-            <div class="card-block">
-              <div class="form-group row">
-                <label class="col-sm-4 col-form-label">出版者</label>
-                <div class="col-sm-8">
-                  <input class="form-control form-control-sm" type="text" v-model="metadata.publisher" placeholder="出版者名" />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card mb-2">
-            <div class="card-block">
-              <div class="form-group row">
-                <label class="col-sm-4 col-form-label">言語</label>
-                <div class="col-sm-8">
-                  <select class="form-control form-control-sm" v-model="metadata.language">
-                    <option value="ja">日本語</option>
-                    <option value="en">英語</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card mb-2">
+
+          <div class="card mb-3">
             <div class="card-block">
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">ページ送り方向</label>
                 <div class="col-sm-8">
                   <select class="form-control form-control-sm" v-model="metadata.pageDirection">
-                    <option value="ltr">左から右(横書き)</option>
-                    <option value="rtl">右から左(縦書き)</option>
+                    <option value="ltr">左から右 (横書き)</option>
+                    <option value="rtl">右から左 (縦書き)</option>
                   </select>
                 </div>
               </div>
             </div>
           </div>
-          <div class="card mb-2">
-            <div class="card-block">
-              <div class="form-check">
-                <label class="form-check-label">
-                  <input class="form-check-input" type="checkbox" v-model="metadata.options.titlepage"/>&nbsp;扉ページを自動生成する 
-                </label>
-              </div>
-              <div class="row">
-                <div class="col-sm-6 form-check">
+
+          <div class="card mb-3">
+            <div class="card-header" role="tab" id="headingOption">
+              <a data-toggle="collapse" href="#collapseOption" aria-expanded="true" aria-controls="collapseOption">
+              オプション
+              </a>
+            </div>
+            <div id="collapseOption" class="collapse hide" role="tabpanel" aria-labelledby="headingOption">
+              <div class="card-block">
+                <div class="form-group row">
+                  <label class="col-sm-4 col-form-label">出版者</label>
+                  <div class="col-sm-8">
+                    <input class="form-control form-control-sm" type="text" v-model="metadata.publisher" placeholder="出版者名" />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-sm-4 col-form-label">言語</label>
+                  <div class="col-sm-8">
+                    <select class="form-control form-control-sm" v-model="metadata.language">
+                      <optgroup label="サポート">
+                        <option value="ja">&nbsp;日本語</option>
+                        <option value="zh-TW">&nbsp;繁体中国語</option>
+                        <option value="zh-CN">&nbsp;簡体中国語</option>
+                        <option value="en">&nbsp;英語</option>
+                      </optgroup>
+                      <optgroup label="非サポート">
+                        <option value="aa">&nbsp;アファル語</option>
+                        <option value="ab">&nbsp;アプハジア語</option>
+                        <option value="af">&nbsp;アフリカーンス語</option>
+                        <option value="am">&nbsp;アムハラ語</option>
+                        <option value="ar">&nbsp;アラビア語</option>
+                        <option value="as">&nbsp;アッサム語</option>
+                        <option value="ay">&nbsp;アイマラ語</option>
+                        <option value="az">&nbsp;アゼルバイジェン語</option>
+                        <option value="ba">&nbsp;バシキール語</option>
+                        <option value="be">&nbsp;白ロシア語</option>
+                        <option value="bg">&nbsp;ブルガリア語</option>
+                        <option value="bh">&nbsp;ビハール語</option>
+                        <option value="bi">&nbsp;ビスラマ語</option>
+                        <option value="bn">&nbsp;ベンガル語</option>
+                        <option value="bo">&nbsp;チベット語</option>
+                        <option value="br">&nbsp;ブルターニュ語</option>
+                        <option value="ca">&nbsp;カタラン語</option>
+                        <option value="co">&nbsp;コルシカ語</option>
+                        <option value="cs">&nbsp;チェック語</option>
+                        <option value="cy">&nbsp;ウェールズ語</option>
+                        <option value="da">&nbsp;デンマーク語</option>
+                        <option value="de">&nbsp;ドイツ語</option>
+                        <option value="dz">&nbsp;ブータン語</option>
+                        <option value="el">&nbsp;ギリシャ語</option>
+                        <option value="eo">&nbsp;エスペラント語</option>
+                        <option value="es">&nbsp;スペイン語</option>
+                        <option value="et">&nbsp;エストニア語</option>
+                        <option value="eu">&nbsp;バスク語</option>
+                        <option value="fa">&nbsp;ペルシャ語</option>
+                        <option value="fi">&nbsp;フィンランド語</option>
+                        <option value="fj">&nbsp;フィジー語</option>
+                        <option value="fo">&nbsp;フェロー語</option>
+                        <option value="fr">&nbsp;フランス語</option>
+                        <option value="fy">&nbsp;フリジア語</option>
+                        <option value="ga">&nbsp;アイルランド語</option>
+                        <option value="gd">&nbsp;スコットランド・ゲール語</option>
+                        <option value="gl">&nbsp;ガリシア語</option>
+                        <option value="gn">&nbsp;グワラニ語</option>
+                        <option value="gu">&nbsp;グジャラート語</option>
+                        <option value="gv">&nbsp;マン島ゲール語</option>
+                        <option value="ha">&nbsp;ハウサ語</option>
+                        <option value="he">&nbsp;ヘブライ語</option>
+                        <option value="hi">&nbsp;ヒンディー語</option>
+                        <option value="hr">&nbsp;クロアチア語</option>
+                        <option value="hu">&nbsp;ハンガリー語</option>
+                        <option value="hy">&nbsp;アルメニア語</option>
+                        <option value="ia">&nbsp;インターリンガ
+                        <option value="id">&nbsp;インドネシア語</option>
+                        <option value="ie">&nbsp;インターリング
+                        <option value="ik">&nbsp;イヌピア語</option>
+                        <option value="is">&nbsp;アイスランド語</option>
+                        <option value="it">&nbsp;イタリア語</option>
+                        <option value="iu">&nbsp;イヌクティトット語</option>
+                        <option value="jv">&nbsp;ジャワ語</option>
+                        <option value="ka">&nbsp;グルジア語</option>
+                        <option value="kk">&nbsp;カザフ語</option>
+                        <option value="kl">&nbsp;グリーンランド語</option>
+                        <option value="km">&nbsp;カンボジア語</option>
+                        <option value="kn">&nbsp;カンナダ語</option>
+                        <option value="ko">&nbsp;韓国語</option>
+                        <option value="ks">&nbsp;カシミール語</option>
+                        <option value="ku">&nbsp;クルド語</option>
+                        <option value="ky">&nbsp;キルギス語</option>
+                        <option value="la">&nbsp;ラテン語</option>
+                        <option value="li">&nbsp;リンブルガー語</option>
+                        <option value="ln">&nbsp;リンガラ語</option>
+                        <option value="lo">&nbsp;ラオス語</option>
+                        <option value="lt">&nbsp;リトアニア語</option>
+                        <option value="lv">&nbsp;ラトビア語</option>
+                        <option value="mg">&nbsp;マダガスカル語</option>
+                        <option value="mi">&nbsp;マオリ語</option>
+                        <option value="mk">&nbsp;マケドニア語</option>
+                        <option value="ml">&nbsp;マラヤーラム語</option>
+                        <option value="mn">&nbsp;モンゴル語</option>
+                        <option value="mo">&nbsp;モルダビア語</option>
+                        <option value="mr">&nbsp;マラーティー語</option>
+                        <option value="ms">&nbsp;マレー語</option>
+                        <option value="mt">&nbsp;マルタ語</option>
+                        <option value="my">&nbsp;ビルマ語</option>
+                        <option value="na">&nbsp;ナウル語</option>
+                        <option value="ne">&nbsp;ネパール語</option>
+                        <option value="nl">&nbsp;オランダ語</option>
+                        <option value="no">&nbsp;ノルウェー語</option>
+                        <option value="oc">&nbsp;オキタン語</option>
+                        <option value="om">&nbsp;オロモ語</option>
+                        <option value="or">&nbsp;オーリア語</option>
+                        <option value="pa">&nbsp;パンジャブ語</option>
+                        <option value="pl">&nbsp;ポーランド語</option>
+                        <option value="ps">&nbsp;パシュト語</option>
+                        <option value="pt">&nbsp;ポルトガル語</option>
+                        <option value="qu">&nbsp;ケチュア語</option>
+                        <option value="rm">&nbsp;レト=ロマン語</option>
+                        <option value="rn">&nbsp;キルンディ語</option>
+                        <option value="ro">&nbsp;ルーマニア語</option>
+                        <option value="ru">&nbsp;ロシア語</option>
+                        <option value="rw">&nbsp;キニャーワンダ語</option>
+                        <option value="sa">&nbsp;サンスクリット語</option>
+                        <option value="sd">&nbsp;シンディー語</option>
+                        <option value="sg">&nbsp;サングロ語</option>
+                        <option value="sh">&nbsp;セルボ=クロアチア語</option>
+                        <option value="si">&nbsp;シンハラ語</option>
+                        <option value="sk">&nbsp;スロバキア語</option>
+                        <option value="sl">&nbsp;スロベニア語</option>
+                        <option value="sm">&nbsp;サモア語</option>
+                        <option value="sn">&nbsp;ショナ語</option>
+                        <option value="so">&nbsp;ソマリ語</option>
+                        <option value="sq">&nbsp;アルバニア語</option>
+                        <option value="sr">&nbsp;セルビア語</option>
+                        <option value="ss">&nbsp;シスワティ語</option>
+                        <option value="st">&nbsp;セソト語</option>
+                        <option value="su">&nbsp;スンダン語</option>
+                        <option value="sv">&nbsp;スウェーデン語</option>
+                        <option value="sw">&nbsp;スワヒリ語</option>
+                        <option value="ta">&nbsp;タミール語</option>
+                        <option value="te">&nbsp;テルグ語</option>
+                        <option value="tg">&nbsp;タジク語</option>
+                        <option value="th">&nbsp;タイ語</option>
+                        <option value="ti">&nbsp;チグリニャ語</option>
+                        <option value="tk">&nbsp;トルクメン語</option>
+                        <option value="tl">&nbsp;タガログ語</option>
+                        <option value="tn">&nbsp;セツワナ語</option>
+                        <option value="to">&nbsp;トンガ語</option>
+                        <option value="tr">&nbsp;トルコ語</option>
+                        <option value="ts">&nbsp;ツォンガ語</option>
+                        <option value="tt">&nbsp;タタール語</option>
+                        <option value="tw">&nbsp;トウィ語</option>
+                        <option value="ug">&nbsp;ウイグル語</option>
+                        <option value="uk">&nbsp;ウクライナ語</option>
+                        <option value="ur">&nbsp;ウルドゥー語</option>
+                        <option value="uz">&nbsp;ウズベク語</option>
+                        <option value="vi">&nbsp;ベトナム語</option>
+                        <option value="vo">&nbsp;ボラピュク語</option>
+                        <option value="wo">&nbsp;ウォロフ語</option>
+                        <option value="xh">&nbsp;コサ語</option>
+                        <option value="yi">&nbsp;イディッシュ語</option>
+                        <option value="yo">&nbsp;ヨルバ語</option>
+                        <option value="zh">&nbsp;中国語</option>
+                        <option value="zu">&nbsp;ズールー語</option>
+                      </optgroup>
+                    </select>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-check">
                   <label class="form-check-label">
-                    <input class="form-check-input" type="checkbox" v-model="metadata.options.tocInSpine"/>&nbsp;目次ページを自動生成する 
+                    <input class="form-check-input" type="checkbox" v-model="metadata.options.titlepage"/>&nbsp;扉ページを自動生成する 
                   </label>
                 </div>
-                <div class="col-sm-6 form-group">
-                  <select class="form-control form-control-sm" v-model.number="metadata.options.tocDisplayDepth">
-                    <optgroup label="目次の階層の深さ">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6（推奨）</option>
-                    </
-                    <optgroup>
-                  </select>
-                </div> 
-              </div>
-              <div class="form-check">
-                <label class="form-check-label">
-                  <input class="form-check-input" type="checkbox" v-model="metadata.options.displayLandmarksNav"/>&nbsp;目次ページにランドマークナビゲーションを表示する 
-                </label>
-              </div>
-              <div class="form-check">
-                <label class="form-check-label">
-                  <input class="form-check-input" type="checkbox" v-model="metadata.options.displayLoiNav"/>&nbsp;目次ページに図版一覧を表示する 
-                </label>
-              </div>
-              <div class="form-check">
-                <label class="form-check-label">
-                  <input class="form-check-input" type="checkbox" v-model="metadata.options.displayLotNav"/>&nbsp;目次ページに表一覧を表示する 
-                </label>
-              </div>
-              <div class="row">
-                <div class="col-sm-6 form-check">
+                <div class="row">
+                  <div class="col-sm-6 form-check">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="checkbox" v-model="metadata.options.tocInSpine"/>&nbsp;目次ページを自動生成する 
+                    </label>
+                  </div>
+                  <div class="col-sm-6 form-group">
+                    <select class="form-control form-control-sm" v-model.number="metadata.options.tocDisplayDepth">
+                      <optgroup label="目次の階層の深さ">
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6（推奨）</option>
+                      </
+                      <optgroup>
+                    </select>
+                  </div> 
+                </div>
+                <div class="form-check">
                   <label class="form-check-label">
-                    <input class="form-check-input" type="checkbox" v-model="metadata.options.autoTcy"/>&nbsp;自動縦中横を有効にする 
+                    <input class="form-check-input" type="checkbox" v-model="metadata.options.displayLandmarksNav"/>&nbsp;目次ページにランドマークナビゲーションを表示する 
                   </label>
                 </div>
-                <div class="col-sm-6 form-group">
-                  <select class="form-control form-control-sm" v-model.number="metadata.options.tcyDigit">
-                    <optgroup label="縦中横にする数字の上限桁数">
-                    <option value="2">2桁</option>
-                    <option value="3">3桁</option>
-                    <option value="4">4桁</option>
-                    </optgroup>
-                  </select>
+                <div class="form-check">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" v-model="metadata.options.displayLoiNav"/>&nbsp;目次ページに図版一覧を表示する 
+                  </label>
                 </div>
-              </div>
-              <div class="form-check">
-                <label class="form-check-label">
-                  <input class="form-check-input" type="checkbox" v-model="metadata.options.kepub"/>&nbsp;拡張子を
-                  <code>.kepub.epub</code>にする
-                </label>
-              </div>
-              <div class="form-check">
-                <label class="form-check-label">
-                  <input class="form-check-input" type="checkbox" v-model="metadata.options.autoSentenceWrap"/>&nbsp;文を句点ごとに
-                  <code>span</code>で囲む
-                </label>
+                <div class="form-check">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" v-model="metadata.options.displayLotNav"/>&nbsp;目次ページに表一覧を表示する 
+                  </label>
+                </div>
+                <div class="row">
+                  <div class="col-sm-6 form-check">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="checkbox" v-model="metadata.options.autoTcy"/>&nbsp;自動縦中横を有効にする 
+                    </label>
+                  </div>
+                  <div class="col-sm-6 form-group">
+                    <select class="form-control form-control-sm" v-model.number="metadata.options.tcyDigit">
+                      <optgroup label="縦中横にする数字の上限桁数">
+                      <option value="2">2桁</option>
+                      <option value="3">3桁</option>
+                      <option value="4">4桁</option>
+                      </optgroup>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-check">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" v-model="metadata.options.kepub"/>&nbsp;拡張子を
+                    <code>.kepub.epub</code>にする
+                  </label>
+                </div>
+                <div class="form-check">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" v-model="metadata.options.autoSentenceWrap"/>&nbsp;文を句点ごとに
+                    <code>span</code>で囲む
+                  </label>
+                </div>
               </div>
             </div>
           </div>
-          <div class="card mb-2">
-            <div class="card-block">
-              <div class="card-text">iBooks独自オプション</div>
-              <div class="form-group row">
-                <label class="col-sm-4 col-form-label">本のバージョン</label>
-                <div class="col-sm-8">
-                  <input class="form-control form-control-sm" type="text" v-model="metadata.ibooks.version" placeholder="バージョン番号" />
+          <div class="card mb-3">
+            <div class="card-header" role="tab" id="headingIbooks">
+              <a data-toggle="collapse" href="#collapseIbooks" aria-expanded="true" aria-controls="collapseIbooks">
+              iBooks独自設定
+              </a>
+            </div>
+            <div id="collapseIbooks" class="collapse hide" role="tabpanel" aria-labelledby="headingIbooks">
+              <div class="card-block">
+                <div class="form-group row">
+                  <label class="col-sm-4 col-form-label">本のバージョン</label>
+                  <div class="col-sm-8">
+                    <input class="form-control form-control-sm" type="text" v-model="metadata.ibooks.version" placeholder="バージョン番号" />
+                  </div>
                 </div>
-              </div>
-              <div class="form-check">
-                <label class="form-check-label">
-                  <input class="form-check-input" type="checkbox" v-model="metadata.ibooks.specifiedFonts"/>&nbsp;埋め込みフォントが使われていれば有効にする
-                </label>
+                <div class="form-check">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" v-model="metadata.ibooks.specifiedFonts"/>&nbsp;埋め込みフォントが使われていれば有効にする
+                  </label>
+                </div>
               </div>
             </div>
           </div>
           <hr class="my-4 hidden-md-up">
         </div>
         <div class="col-md-6">
-          <div class="form-group">
-            <a role="button" class="btn btn-sm" v-bind:class="{ 'btn-primary': btnStatus.downloadable, 'btn-secondary':  btnStatus.disabled, disabled: btnStatus.disabled }" v-bind:href="url" download="ddconv.yml" >
-              <i class="fa fa-download" aria-hidden="true"></i>&nbsp;ダウンロード
-            </a>
-            <button class="btn btn-sm" v-bind:class="{ 'btn-info': btnStatus.downloadable, 'btn-secondary':  btnStatus.disabled}" v-on:click="copyTextarea" v-bind:disabled="btnStatus.disabled" >
-              <i class="fa fa-copy" aria-hidden="true"></i>&nbsp;クリップボードにコピー
-            </button>
+          <div class="card mb-3">
+            <div class="card-block">
+              <div class="form-group row">
+                <div class="col-md-6">
+                  <a role="button" class="btn btn-sm btn-block text-center" v-bind:class="{ 'btn-primary': btnStatus.downloadable, 'btn-secondary':  btnStatus.disabled, disabled: btnStatus.disabled }" v-bind:href="url" download="ddconv.yml" >
+                    <i class="fa fa-download" aria-hidden="true"></i>&nbsp;ダウンロード
+                  </a>
+                  <div class="mb-3 hidden-md-up"></div>
+                </div>
+                <div class="col-md-6">
+                  <button class="btn btn-sm btn-block text-center" v-bind:class="{ 'btn-info': btnStatus.downloadable, 'btn-secondary':  btnStatus.disabled}" v-on:click="copyTextarea" v-bind:disabled="btnStatus.disabled" >
+                    <i class="fa fa-copy" aria-hidden="true"></i>&nbsp;コピー
+                  </button>
+              </div>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <textarea id="textarea" class="form-control form-control-sm" readonly style="height:580px">{{ yaml }}</textarea>
@@ -228,6 +396,6 @@
         </div>
       </div>
     </footer>
-    <script src="bundle.js"></script>
+    <script src="dist/bundle.js"></script>
   </body>
 </html>

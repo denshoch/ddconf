@@ -16,8 +16,8 @@ var app = new Vue({
   	    }
   	  ],
   	  publisher: "",
+      pageDirection: "ltr",
   	  language: "ja",
-  	  pageDirection: "ltr",
   	  options: {
   	  	titlepage:  false,
   	  	tocInSpine: true,
