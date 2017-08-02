@@ -65,6 +65,9 @@ var app = new Vue({
   	  if ( metadata.publisher == "" ) {
   	  	delete metadata.publisher;
   	  }
+      if ( metadata.options.skipCover === true ) {
+        delete metadata.options.skipCover;
+      }
       if ( metadata.options.tocDisplayDepth === 6 ) {
         delete metadata.options.tocDisplayDepth;
       }
