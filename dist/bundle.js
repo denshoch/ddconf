@@ -12568,6 +12568,7 @@ var app = new Vue({
       pageDirection: "ltr",
   	  language: "ja",
   	  options: {
+        skipCover: true,
   	  	titlepage:  false,
   	  	tocInSpine: true,
   	  	tocDisplayDepth: 6,
