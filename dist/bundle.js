@@ -12579,7 +12579,8 @@ var app = new Vue({
   	  	autoTcy:    true,
   	  	tcyDigit:   2,
   	  	kepub:      false,
-  	  	autoSentenceWrap: false
+  	  	autoSentenceWrap: false,
+        aozoraRuby: false
   	  },
       ibooks: {
         version: "",
@@ -12631,6 +12632,9 @@ var app = new Vue({
       }
       if ( metadata.options.kepub === false ) {
         delete metadata.options.kepub;
+      }
+      if ( metadata.options.aozoraRuby === false ) {
+        delete metadata.options.aozoraRuby;
       }
       if ( metadata.ibooks.version == "" ) {
         delete metadata.ibooks.version;
